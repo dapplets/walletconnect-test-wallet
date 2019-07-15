@@ -187,6 +187,8 @@ class App extends React.Component<{}> {
 
       const walletConnector = new WalletConnect({ session });
 
+      window.walletConnector = walletConnector;
+
       const { connected, chainId, accounts, peerMeta } = walletConnector;
 
       const address = accounts[0];
