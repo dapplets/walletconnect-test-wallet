@@ -1,5 +1,4 @@
 import * as ethers from "ethers";
-import { getChainData } from "./utilities";
 
 export const testAccounts = [
   {
@@ -24,7 +23,7 @@ export function getWallet() {
 }
 
 export async function updateWallet(address: string, chainId: number) {
-  const rpcUrl = getChainData(chainId).rpc_url;
+  const rpcUrl = `https://ethereum-api.xyz/rpc?chainId=${chainId}`;
   const account = testAccounts.filter(
     account => account.address === address
   )[0];

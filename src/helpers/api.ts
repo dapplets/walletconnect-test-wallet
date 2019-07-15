@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { IAssetData, IGasPrices, IParsedTx } from "./types";
-import { payloadId, getChainData } from "./utilities";
+import { payloadId } from "./utilities";
 import { IJsonRpcRequest } from "@walletconnect/types";
 
 const api: AxiosInstance = axios.create({
@@ -16,7 +16,7 @@ export const apiSendTransaction = async (
   txParams: any,
   chainId: number
 ): Promise<number> => {
-  const rpcUrl = getChainData(chainId).rpc_url;
+  const rpcUrl = `https://ethereum-api.xyz/rpc?chainId=${chainId}`;
 
   if (!rpcUrl && typeof rpcUrl !== "string") {
     throw new Error("Invalid or missing rpc url");
