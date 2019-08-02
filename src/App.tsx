@@ -20,7 +20,8 @@ import {
   sendTransaction,
   signTransaction,
   signMessage,
-  signPersonalMessage
+  signPersonalMessage,
+  sendDappletTransaction
 } from "./helpers/wallet";
 import { apiGetCustomRequest } from "./helpers/api";
 
@@ -157,7 +158,8 @@ const signingMethods = [
   "eth_signTransaction",
   "personal_sign",
   "eth_sign",
-  "eth_signTypedData"
+  "eth_signTypedData",
+  "wallet_loadDapplet"
 ];
 
 class App extends React.Component<{}> {
@@ -493,6 +495,9 @@ class App extends React.Component<{}> {
               errorMsg = "Address requested does not match active account";
             }
             break;
+          case "wallet_loadDapplet":
+            result = await sendDappletTransaction(displayRequest.params[2], displayRequest.params[1]);
+            break;
           default:
             break;
         }
@@ -572,24 +577,24 @@ class App extends React.Component<{}> {
                     </SActions>
                   </Column>
                 ) : (
-                  <Column>
-                    <AccountDetails
-                      address={address}
-                      chainId={chainId}
-                      accounts={accounts}
-                      updateAddress={this.updateAddress}
-                      updateChain={this.updateChain}
-                    />
-                    <SActionsColumn>
-                      <SButton onClick={this.toggleScanner}>{`Scan`}</SButton>
-                      <p>{"OR"}</p>
-                      <SInput
-                        onChange={this.onURIPaste}
-                        placeholder={"Paste wc: uri"}
+                    <Column>
+                      <AccountDetails
+                        address={address}
+                        chainId={chainId}
+                        accounts={accounts}
+                        updateAddress={this.updateAddress}
+                        updateChain={this.updateChain}
                       />
-                    </SActionsColumn>
-                  </Column>
-                )
+                      <SActionsColumn>
+                        <SButton onClick={this.toggleScanner}>{`Scan`}</SButton>
+                        <p>{"OR"}</p>
+                        <SInput
+                          onChange={this.onURIPaste}
+                          placeholder={"Paste wc: uri"}
+                        />
+                      </SActionsColumn>
+                    </Column>
+                  )
               ) : !displayRequest ? (
                 <Column>
                   <AccountDetails
@@ -619,19 +624,19 @@ class App extends React.Component<{}> {
                       </SRequestButton>
                     ))
                   ) : (
-                    <div>
-                      <div>{"No pending requests"}</div>
-                    </div>
-                  )}
+                      <div>
+                        <div>{"No pending requests"}</div>
+                      </div>
+                    )}
                 </Column>
               ) : (
-                <DisplayRequest
-                  displayRequest={displayRequest}
-                  peerMeta={peerMeta}
-                  approveRequest={this.approveRequest}
-                  rejectRequest={this.rejectRequest}
-                />
-              )}
+                    <DisplayRequest
+                      displayRequest={displayRequest}
+                      peerMeta={peerMeta}
+                      approveRequest={this.approveRequest}
+                      rejectRequest={this.rejectRequest}
+                    />
+                  )}
             </Card>
           </SContent>
           {scanner && (
