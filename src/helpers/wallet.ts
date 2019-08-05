@@ -103,9 +103,6 @@ export async function signPersonalMessage(message: any) {
 
 // ToDo: move Dapplet related code to DappletConfig
 export async function sendDappletTransaction(dappletConfig: any, txMeta: any) {
-  console.error("txMeta: ", txMeta); // tslint:disable-line
-  console.error("dappletConfig: ", dappletConfig); // tslint:disable-line
-
   if (wallet) {
     // ToDo: change dappletConfig tu use Human-Readable-ABI and compute tx data from it.
     const data = ethers.utils.defaultAbiCoder.encode(dappletConfig.abiInputs, [
@@ -116,7 +113,6 @@ export async function sendDappletTransaction(dappletConfig: any, txMeta: any) {
       to: dappletConfig.to,
       data: dappletConfig.signature + data.substring(2)
     });
-    console.log(">result.hash", "https://rinkeby.etherscan.io/tx/" + result.hash); // tslint:disable-line
     return result.hash;
   } else {
     console.error("No Active Account"); // tslint:disable-line
