@@ -93,7 +93,7 @@ export const apiGetCustomRequest = async (
 };
 
 const dappletApi: AxiosInstance = axios.create({
-  baseURL: "https://dapplets.github.io/dapplet-examples/",
+  baseURL: "https://dapplets.github.io/dapplet-examples/", // ToDo: replace to test.dapplets.org
   timeout: 30000 // 30 secs
 });
 

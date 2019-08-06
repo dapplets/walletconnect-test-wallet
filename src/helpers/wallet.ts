@@ -102,7 +102,7 @@ export async function signPersonalMessage(message: any) {
 }
 
 // ToDo: move Dapplet related code to DappletConfig
-export async function sendDappletTransaction(dappletConfig: any, txMeta: any) {
+export async function sendTransactionFromDapplet(dappletConfig: any, txMeta: any) {
   if (wallet) {
     // ToDo: change dappletConfig tu use Human-Readable-ABI and compute tx data from it.
     const data = ethers.utils.defaultAbiCoder.encode(dappletConfig.abiInputs, [

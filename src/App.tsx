@@ -21,7 +21,7 @@ import {
   signTransaction,
   signMessage,
   signPersonalMessage,
-  sendDappletTransaction
+  sendTransactionFromDapplet
 } from "./helpers/wallet";
 import { apiGetCustomRequest } from "./helpers/api";
 
@@ -504,7 +504,8 @@ class App extends React.Component<{}> {
             }
             break;
           case "wallet_loadDapplet":
-            result = await sendDappletTransaction(displayRequest.params[2], displayRequest.params[1]);
+            // ToDo: check params[0]
+            result = await sendTransactionFromDapplet(displayRequest.params[2], displayRequest.params[1]);
             break;
           default:
             break;
