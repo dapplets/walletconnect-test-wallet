@@ -294,6 +294,14 @@ class App extends React.Component<{}> {
           throw error;
         }
 
+        if (payload.method === "wallet_checkDappletCompatibility") {
+          walletConnector.approveRequest({
+            id: payload.id,
+            result: true
+          });
+          return;
+        }
+
         if (!signingMethods.includes(payload.method)) {
           const { chainId } = this.state;
           apiGetCustomRequest(chainId, payload)
