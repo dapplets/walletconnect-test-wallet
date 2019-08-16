@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { convertHexToUtf8, convertHexToNumber } from "@walletconnect/utils";
 import Column from "./Column";
 import Button from "./Button";
-import { apiFetchDapplet } from 'src/helpers/api';
-import { sha256 } from "../helpers/dapplets";
+import { apiFetchDapplet } from '../helpers/api';
+import { getRenderer } from "../helpers/dapplets";
 
 const SRequestValues = styled.div`
   font-family: monospace;
@@ -63,21 +63,25 @@ class DisplayRequest extends React.Component<any, any> {
     if (displayRequest.method === 'wallet_loadDapplet') {
       const dappletId = displayRequest.params[0];
       apiFetchDapplet(dappletId).then(dapplet => {
-        // metaTx.tweetHash = sha256([metaTx.text])
-        let template = dapplet.template;
-        const metaTx = displayRequest.params[1];
-        metaTx.tweetHash = sha256([metaTx.text]);
         displayRequest.params[2] = dapplet;
+        const metaTx = displayRequest.params[1];
 
-        // template rendering 
-        for (const key in metaTx) {
-          if (key) {
-            const value = metaTx[key];
-            template = template.replace('{{' + key + '}}', value);
+        let html = "Compatible Dapplet view is not found.";
+
+        for (const view of dapplet.views) {
+          if (!view["@type"]) { 
+            continue;
           }
+          
+          const renderer = getRenderer(view["@type"]);
+          
+          if (renderer) {
+            html = renderer(view.template, metaTx);
+            break;
+          }            
         }
-        console.log('template', template); // tslint:disable-line
-        me.setState({ renderedDapplet: template });
+
+        me.setState({ renderedDapplet: html });
       });
     }
   }
@@ -103,8 +107,8 @@ class DisplayRequest extends React.Component<any, any> {
             value: displayRequest.params[0].gas
               ? convertHexToNumber(displayRequest.params[0].gas)
               : displayRequest.params[0].gasLimit
-              ? convertHexToNumber(displayRequest.params[0].gasLimit)
-              : ""
+                ? convertHexToNumber(displayRequest.params[0].gasLimit)
+                : ""
           },
           {
             label: "Gas Price",

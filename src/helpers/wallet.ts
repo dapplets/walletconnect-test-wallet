@@ -1,5 +1,6 @@
 import * as ethers from "ethers";
 import { getChainData } from "./utilities";
+import { getTxBuilder } from "../helpers/dapplets";
 
 export const testAccounts = [
   {
@@ -104,16 +105,18 @@ export async function signPersonalMessage(message: any) {
 // ToDo: move Dapplet related code to DappletConfig
 export async function sendTransactionFromDapplet(dappletConfig: any, txMeta: any) {
   if (wallet) {
-    // ToDo: change dappletConfig tu use Human-Readable-ABI and compute tx data from it.
-    const data = ethers.utils.defaultAbiCoder.encode(dappletConfig.abiInputs, [
-      ethers.utils.hexlify(ethers.utils.bigNumberify(txMeta.id)),
-      ethers.utils.hexlify(txMeta.tweetHash)
-    ])
-    const result = await wallet.sendTransaction({
-      to: dappletConfig.to,
-      data: dappletConfig.signature + data.substring(2)
-    });
-    return result.hash;
+    for (const txName in dappletConfig.transactions) {
+      if (txName) {
+        const tx = dappletConfig.transactions[txName];
+        const builder = getTxBuilder(tx["@type"]);
+        if (builder) {
+          const builtTx = builder(tx, txMeta);
+          const result = await wallet.sendTransaction(builtTx);
+          return result.hash;
+        }
+      }
+    }
+    return null;
   } else {
     console.error("No Active Account"); // tslint:disable-line
   }
